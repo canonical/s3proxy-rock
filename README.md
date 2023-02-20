@@ -1,4 +1,4 @@
-# s3prox-rock
+# s3proxy-rock
 
 [![Build ROCK](https://github.com/canonical/s3proxy-rock/actions/workflows/build-rock.yaml/badge.svg)](https://github.com/canonical/s3proxy-rock/actions/workflows/build-rock.yaml)
 
