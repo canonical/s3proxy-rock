@@ -1,15 +1,14 @@
 name: s3proxy
 base: ubuntu:22.04 # the base environment for this ROCK
-version: '2.0.0' # just for humans. Semantic versioning is recommended
+version: 's3proxy-2.1.0' # just for humans. Semantic versioning is recommended
 summary: A minimal implementation of the S3 interface on your own infrastructure
 description: |
-    S3proxy is a Java-based abstraction of the AWS S3 API, which is able to mimic
-    or abstract S3 calls and transform them into a variety of backend interfaces,
-    including local filesystem storage
+  S3proxy is a Java-based abstraction of the AWS S3 API, which is able to mimic
+  or abstract S3 calls and transform them into a variety of backend interfaces,
+  including local filesystem storage
 license: Apache-2.0 # your application's SPDX license
 platforms: # The platforms this ROCK should be built on and run on
-    amd64:
-
+  amd64:
 services:
   s3proxy:
     override: replace
@@ -40,37 +39,38 @@ services:
       JCLOUDS_KEYSTONE_SCOPE: ""
       JCLOUDS_KEYSTONE_PROJECT_DOMAIN_NAME: ""
       JCLOUDS_FILESYSTEM_BASEDIR: /data
-
 parts:
-    wrapper-script:
-      plugin: dump
-      source: .
-      organize:
-        start-s3proxy.sh: usr/bin/start-s3proxy.sh
-      stage:
-        - usr/bin/start-s3proxy.sh
-    jre:
-      plugin: nil
-      overlay-packages:
-        - default-jre-headless
-    s3proxy:
-      plugin: nil
-      source-type: git
-      source: https://github.com/gaul/s3proxy
-      source-tag: s3proxy-2.0.0
-      build-environment:
-        - VERSION: "2.0.0"
-        - JAVA_HOME: "/usr/lib/jvm/default-java"
-        - SUDO_UID: "0"
-        - SUDO_GID: "0"
-        - SUDO_USER: "root"
-      build-packages:
-        - default-jdk
-        - maven
-      override-build: |
-        mvn versions:set -DnewVersion=${VERSION}
-        mvn package -DskipTests
-        install -D -m755 target/s3proxy ${CRAFT_PART_INSTALL}/opt/s3proxy/bin/s3proxy
-      organize:
-        opt/s3proxy/bin/s3proxy: usr/bin/s3proxy
-      stage: [-opt/s3proxy]
+  wrapper-script:
+    plugin: dump
+    source: .
+    organize:
+      start-s3proxy.sh: usr/bin/start-s3proxy.sh
+    stage:
+      - usr/bin/start-s3proxy.sh
+  jre:
+    plugin: nil
+    overlay-packages:
+      - default-jre-headless
+  s3proxy:
+    plugin: nil
+    source-type: git
+    source: https://github.com/gaul/s3proxy
+    source-tag: s3proxy-2.1.0
+    build-environment:
+      - VERSION: "2.0.0"
+      - JAVA_HOME: "/usr/lib/jvm/default-java"
+      - SUDO_UID: "0"
+      - SUDO_GID: "0"
+      - SUDO_USER: "root"
+    build-packages:
+      - default-jdk
+      - maven
+    override-build: |
+      mvn versions:set -DnewVersion=${VERSION}
+      mvn package -DskipTests
+      install -D -m755 target/s3proxy ${CRAFT_PART_INSTALL}/opt/s3proxy/bin/s3proxy
+    organize:
+      opt/s3proxy/bin/s3proxy: usr/bin/s3proxy
+    stage: [-opt/s3proxy]
+    build-snaps:
+      - go//stable
